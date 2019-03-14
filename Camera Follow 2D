@@ -1,0 +1,35 @@
+using UnityEngine;
+
+public class CameraFollow : MonoBehaviour
+{
+    //Setter noen "variabler" slik at kameraet følger etter spilleren.
+    public Transform target;
+    public float smoothSpeed = 0.2f;
+    public Vector3 offset;
+
+    //Lar oss bestemme om vi vil ha avgrensning for kameraet eller ikke.
+    public bool bounds;
+
+    public Vector3 minCameraPos;
+    public Vector3 maxCameraPos;
+
+
+
+    private void FixedUpdate()
+    {
+        //Passer på at kameraet ikke bare følger etter spilleren, men ikke hakker, men her kan også "* Time.deltatime" bli lagt til ved 
+        //siden av smoothSpeed, og smoothSpeed endres til f.eks 10, slik at kamera følger karakteren saktere enn det karakteren løper.
+
+        Vector3 desiredPosition = target.position + offset;
+        Vector3 smoothedPosition = Vector3.Lerp (transform.position, desiredPosition, smoothSpeed);
+        transform.position = smoothedPosition;
+
+        //Hvis "Bounds" er sjekket av, så vil avgrensninger for kameraet bli lagt til, men dette blir lagt til manuelt, slik at det kan endres på fra level til level på en enklere måte.
+        if (bounds)
+        {
+            transform.position = new Vector3(Mathf.Clamp(transform.position.x, minCameraPos.x, maxCameraPos.x),
+                Mathf.Clamp(transform.position.y, minCameraPos.y, maxCameraPos.y),
+                Mathf.Clamp(transform.position.z, minCameraPos.z, maxCameraPos.z));
+        }
+    }
+}
